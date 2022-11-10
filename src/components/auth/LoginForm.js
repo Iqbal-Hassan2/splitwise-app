@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 // @mui
 import {
   Stack,
@@ -11,27 +12,50 @@ import {
 import { LoadingButton } from "@mui/lab";
 // components
 import Iconify from "../iconify/Iconify";
+import { useAuth } from "../../hooks/useAuth";
 
 // ----------------------------------------------------------------------
+const error_color = {
+  color: "red",
+};
 
 export function LoginForm() {
-  const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { signIn } = useAuth();
 
-  const handleClick = () => {
-    navigate("/dashboard", { replace: true });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    signIn(data.email, data.password);
+    // navigate("/dashboard", { replace: true });
   };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField
+          name="email"
+          label="Email address"
+          {...register("email", {
+            required: "Email Address is Required",
+            maxLength: 20,
+          })}
+        />
+        {errors.email && <p style={error_color}>{errors.email?.message}</p>}
 
         <TextField
           name="password"
           label="Password"
           type={showPassword ? "text" : "password"}
+          {...register("password", {
+            required: "Password is Required",
+            maxLength: 20,
+          })}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -47,6 +71,9 @@ export function LoginForm() {
             ),
           }}
         />
+        {errors.password && (
+          <p style={error_color}>{errors.password?.message}</p>
+        )}
       </Stack>
 
       <Stack
@@ -68,13 +95,7 @@ export function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton
-        fullWidth
-        size="large"
-        type="submit"
-        variant="contained"
-        onClick={handleClick}
-      >
+      <LoadingButton fullWidth size="large" type="submit" variant="contained">
         Login
       </LoadingButton>
     </form>

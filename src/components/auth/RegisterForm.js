@@ -1,32 +1,76 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 // @mui
 import { Stack, IconButton, InputAdornment, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // components
 import Iconify from "../iconify/Iconify";
+import { useAuth } from "../../hooks/useAuth";
 
 // ----------------------------------------------------------------------
-
+const error_color = {
+  color: "red",
+};
 export function RegisterForm() {
-  const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleClick = () => {
-    navigate("/login", { replace: true });
+  // const handleSubmit = () => {
+  //   navigate("/login", { replace: true });
+  // };
+  const onSubmit = (data) => {
+    signUp(data.email, data.password);
   };
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <TextField name="FirstName" label="First Name" />
-        <TextField name="LastName" label="Last Name" />
-        <TextField name="email" label="Email address" />
+        <TextField
+          name="firstName"
+          label="First Name"
+          {...register("firstName", {
+            required: "First Name is Required",
+            maxLength: 20,
+          })}
+        />
+        {errors.firstName && (
+          <p style={error_color}>{errors.firstName?.message}</p>
+        )}
+        <TextField
+          name="lastName"
+          label="Last Name"
+          {...register("lastName", {
+            required: "Last Name is Required",
+            maxLength: 20,
+          })}
+        />
+        {errors.lastName && (
+          <p style={error_color}>{errors.lastName?.message}</p>
+        )}
+        <TextField
+          name="email"
+          label="Email address"
+          {...register("email", {
+            required: "Email Address is Required",
+            maxLength: 20,
+          })}
+        />
+        {errors.email && <p style={error_color}>{errors.email?.message}</p>}
 
         <TextField
           name="password"
           label="Password"
+          {...register("password", {
+            required: "Password is Required",
+            maxLength: 20,
+          })}
           type={showPassword ? "text" : "password"}
           InputProps={{
             endAdornment: (
@@ -43,13 +87,15 @@ export function RegisterForm() {
             ),
           }}
         />
+        {errors.password && (
+          <p style={error_color}>{errors.password?.message}</p>
+        )}
       </Stack>
       <LoadingButton
         fullWidth
         size="large"
         type="submit"
         variant="contained"
-        onClick={handleClick}
         sx={{ my: 2 }}
       >
         Register
