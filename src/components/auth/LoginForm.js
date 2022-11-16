@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 // @mui
 import {
@@ -10,6 +10,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { toast } from "react-toastify";
 // components
 import Iconify from "../iconify/Iconify";
 import { useAuth } from "../../hooks/useAuth";
@@ -20,19 +21,28 @@ const error_color = {
 };
 
 export function LoginForm() {
+  const [loader, setloader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const { signIn } = useAuth();
-
+  const { login } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    signIn(data.email, data.password);
-    // navigate("/dashboard", { replace: true });
+  const onSubmit = async (data) => {
+    setloader(true);
+    await login(data.email, data.password)
+      .then((res) => {
+        toast("User login Successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.message);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
 
   return (
@@ -43,7 +53,6 @@ export function LoginForm() {
           label="Email address"
           {...register("email", {
             required: "Email Address is Required",
-            maxLength: 20,
           })}
         />
         {errors.email && <p style={error_color}>{errors.email?.message}</p>}
@@ -54,7 +63,6 @@ export function LoginForm() {
           type={showPassword ? "text" : "password"}
           {...register("password", {
             required: "Password is Required",
-            maxLength: 20,
           })}
           InputProps={{
             endAdornment: (
@@ -95,7 +103,14 @@ export function LoginForm() {
         </Link>
       </Stack>
 
-      <LoadingButton fullWidth size="large" type="submit" variant="contained">
+      <LoadingButton
+        loading={loader}
+        loadingPosition="center"
+        fullWidth
+        size="large"
+        type="submit"
+        variant="contained"
+      >
         Login
       </LoadingButton>
     </form>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Slider() {
   return (
@@ -93,13 +94,13 @@ export default function Slider() {
                   Keep track of your shared expenses and balances with
                   housemates, trips, groups, friends, and family.
                 </p>
-                <a
+                <Link
                   className="cta-button animate-slow font-mont inline-block text-white rounded bg-teal shadow px-16 py-4"
                   id="cta-button"
-                  href="/signup"
+                  to="/admin/register"
                 >
                   Sign up
-                </a>
+                </Link>
                 <p className="mt-8 text-charcoal text-sm flex h-4 items-center">
                   Free for{" "}
                   <a

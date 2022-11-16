@@ -9,5 +9,4 @@ export const all_images = {
   nyt: require("./images/home_page/nyt.png"),
   login_banner: require("./images/login_page/login_banner.png"),
   register_banner: require("./images/register/register_banner.png"),
-  //   google_icon: require("./icons/social-google.svg"),
 };

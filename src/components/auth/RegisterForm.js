@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 // @mui
 import { Stack, IconButton, InputAdornment, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -13,20 +14,29 @@ const error_color = {
   color: "red",
 };
 export function RegisterForm() {
+  const [loader, setloader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { signUp } = useAuth();
+  const { registerUser } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  // const handleSubmit = () => {
-  //   navigate("/login", { replace: true });
-  // };
   const onSubmit = (data) => {
-    signUp(data.email, data.password);
+    setloader(true);
+    registerUser(data.email, data.password, data.firstName, data.lastName)
+      .then((response) => {
+        toast("User Register Successfully");
+        navigate("/admin/login");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
 
   return (
@@ -37,7 +47,6 @@ export function RegisterForm() {
           label="First Name"
           {...register("firstName", {
             required: "First Name is Required",
-            maxLength: 20,
           })}
         />
         {errors.firstName && (
@@ -48,7 +57,6 @@ export function RegisterForm() {
           label="Last Name"
           {...register("lastName", {
             required: "Last Name is Required",
-            maxLength: 20,
           })}
         />
         {errors.lastName && (
@@ -59,7 +67,6 @@ export function RegisterForm() {
           label="Email address"
           {...register("email", {
             required: "Email Address is Required",
-            maxLength: 20,
           })}
         />
         {errors.email && <p style={error_color}>{errors.email?.message}</p>}
@@ -69,7 +76,6 @@ export function RegisterForm() {
           label="Password"
           {...register("password", {
             required: "Password is Required",
-            maxLength: 20,
           })}
           type={showPassword ? "text" : "password"}
           InputProps={{
@@ -96,6 +102,7 @@ export function RegisterForm() {
         size="large"
         type="submit"
         variant="contained"
+        loading={loader}
         sx={{ my: 2 }}
       >
         Register

@@ -16,6 +16,7 @@ import Iconify from "../components/iconify/Iconify";
 // sections
 import { LoginForm } from "../components/auth/LoginForm";
 import { all_images } from "../assets/all_images";
+import { useAuth } from "../hooks/useAuth";
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +30,7 @@ const StyledContent = styled("div")(() => ({
 // ----------------------------------------------------------------------
 
 export function Login() {
+  const { loginWithGoogle } = useAuth();
   return (
     <>
       <Helmet>
@@ -64,6 +66,7 @@ export function Login() {
                   size="large"
                   color="inherit"
                   variant="outlined"
+                  onClick={loginWithGoogle}
                 >
                   <Iconify
                     icon="eva:google-fill"
@@ -87,7 +90,7 @@ export function Login() {
                 <Typography variant="body2">
                   Don’t have an account?{" "}
                   <Link
-                    to="/register"
+                    to="/admin/register"
                     style={{
                       textDecoration: "none",
                       color: "blue",
