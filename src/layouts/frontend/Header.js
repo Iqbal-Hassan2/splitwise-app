@@ -1,25 +1,70 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { AppBar, Button, Container, Toolbar } from "@mui/material";
 import Logo from "../../components/logo/Logo";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Header() {
+  const { isAuthenticated, logout } = useAuth();
   return (
-    <div className="container mx-auto">
-      <header className="flex items-center justify-between px-8 py-5 font-mont mx-auto">
-        <Logo />
-
-        <div
-          id="guest"
-          className="flex items-center text-xs sm:text-sm md:text-normal font-normal"
-        >
-          <Link
-            className="bg-teal text-white px-3 py-2 sm:px-5 sm:py-3 rounded shadow sm-cta-button"
-            to="/admin"
-          >
-            Log in
-          </Link>
-        </div>
-      </header>
-    </div>
+    <AppBar position="sticky" sx={{ backgroundColor: "#1cc29f" }}>
+      <Container maxWidth="xl">
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Logo />
+          <div id="guest" style={{ display: "flex" }}>
+            {!isAuthenticated ? (
+              <Link
+                style={{
+                  margin: "0 8px",
+                  borderRadius: "4px",
+                  whiteSpace: "nowrap",
+                  fontWeight: "bold",
+                  fontSize: "0.9375rem",
+                  padding: "8px 22px",
+                  color: "#fff",
+                  backgroundColor: "#373b3f",
+                }}
+                to="/admin"
+              >
+                Log in
+              </Link>
+            ) : (
+              <div style={{ display: "flex" }}>
+                <Link
+                  style={{
+                    margin: "0 8px",
+                    borderRadius: "4px",
+                    whiteSpace: "nowrap",
+                    fontWeight: "bold",
+                    fontSize: "0.9375rem",
+                    padding: "8px 22px",
+                    color: "#fff",
+                    backgroundColor: "#373b3f",
+                  }}
+                  to="/dashboard"
+                >
+                  Go to Dashboard
+                </Link>
+                <Button
+                  sx={{
+                    margin: "0 8px",
+                    color: "#fff",
+                    backgroundColor: "#373b3f",
+                    "&:hover": { backgroundColor: "#0c3c32" },
+                  }}
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
+          </div>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }

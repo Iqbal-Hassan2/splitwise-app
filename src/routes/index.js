@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 // guard
 import { AuthGuard } from "../guards/AuthGuard";
 import { GuestGuard } from "../guards/GuestGuard";
-//
+// layouts
 import { AuthLayout } from "../layouts/AuthLayout";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 import { FrontendLayout } from "../layouts/FrontendLayout";
@@ -21,9 +21,9 @@ export function Routers() {
       <Route
         path="/"
         element={
-          <GuestGuard>
-            <FrontendLayout />
-          </GuestGuard>
+          // <GuestGuard>
+          <FrontendLayout />
+          // </GuestGuard>
         }
       >
         <Route index element={<Home />} />
